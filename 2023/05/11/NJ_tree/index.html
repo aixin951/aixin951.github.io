@@ -9,7 +9,7 @@
     
     <title>
         
-            归档: 2023 |
+            利用plink构建IBS距离矩阵并作NJ tree |
         
         Aixin&#39;s Blog
     </title>
@@ -85,7 +85,7 @@
                         </li>
                     
                         <li class="menu-item">
-                            <a class="active"
+                            <a class=""
                                href="/archives"
                             >
                                 归档
@@ -113,7 +113,7 @@
                 </li>
             
                 <li class="drawer-menu-item flex-center">
-                    <a class="active"
+                    <a class=""
                        href="/archives">归档</a>
                 </li>
             
@@ -133,45 +133,102 @@
 
                 
                     <div class="fade-in-down-animation">
-    <div class="archive-container ">
-        
-<div class="archive-list-container">
-    
-        <section class="archive-item">
-            <div class="archive-item-header">
-                <span class="archive-year">2023</span>
-                <span class="archive-year-post-count">[3]</span>
+    <div class="post-page-container">
+        <div class="article-content-container">
+
+            <div class="article-title">
+                <span class="title-hover-animation">利用plink构建IBS距离矩阵并作NJ tree</span>
             </div>
-            <ul class="article-list">
-                
-                    <li class="article-item">
-                        <a class="article-title"
-                           href="/2023/05/11/NJ_tree/"
-                        >利用plink构建IBS距离矩阵并作NJ tree</a>
-                        <span class="article-date">05-11</span>
-                    </li>
-                
-                    <li class="article-item">
-                        <a class="article-title"
-                           href="/2023/05/06/hexo/"
-                        >Github 搭建个人博客</a>
-                        <span class="article-date">05-06</span>
-                    </li>
-                
-                    <li class="article-item">
-                        <a class="article-title"
-                           href="/2023/05/05/hello-world/"
-                        >Hello World</a>
-                        <span class="article-date">05-05</span>
-                    </li>
-                
-            </ul>
-        </section>
+
+            
+                <div class="article-header">
+                    <div class="avatar">
+                        <img src="/images/love.png">
+                    </div>
+                    <div class="info">
+                        <div class="author">
+                            <span class="name">Aixin Ni</span>
+                            
+                                <span class="author-label">Lv1</span>
+                            
+                        </div>
+                        <div class="meta-info">
+                            
+<div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        
+            <i class="fa-regular fa-calendar-plus"></i>&nbsp;
+        
+        <span class="pc">2023-05-11 10:39:52</span>
+        <span class="mobile">2023-05-11 10:39</span>
+    </span>
+    
+        <span class="article-update-date article-meta-item">
+        <i class="fas fa-file-pen"></i>&nbsp;
+        <span class="pc">2023-05-11 15:35:04</span>
+    </span>
+    
+    
+    
+
+    
+    
+    
     
 </div>
 
+                        </div>
+                    </div>
+                </div>
+            
+
+            <div class="article-content keep-markdown-body">
+                
+
+                <h3 id="plink计算IBS遗传距离"><a href="#plink计算IBS遗传距离" class="headerlink" title="plink计算IBS遗传距离"></a>plink计算IBS遗传距离</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">plink --bfile free_final_reAn_reHom_imput_reW --allow-extra-chr --chr-set 41 --distance-matrix --out distance</span><br></pre></td></tr></table></figure>
+
+<p>生成遗传距离矩阵文件和id文件，对结果文件进行处理</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">awk <span class="string">&#x27;&#123;print $2&quot; &quot;&#125;&#x27;</span> distance.mdist.id | <span class="built_in">cut</span> -c1-10 &gt; ID.txt</span><br><span class="line"><span class="built_in">paste</span> -d<span class="string">&#x27; &#x27;</span> ID.txt distance.mdist | sed <span class="string">&#x27;s/ //; 1i 934&#x27;</span> &gt; infile <span class="comment">##934为样本数量</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="phylip生成NJ-tree"><a href="#phylip生成NJ-tree" class="headerlink" title="phylip生成NJ tree"></a>phylip生成NJ tree</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">##phylip的下载安装</span></span><br><span class="line"><span class="comment">#linux版本</span></span><br><span class="line">wget http://evolution.gs.washington.edu/phylip/download/phylip-3.697.tar.gz</span><br><span class="line">tar -zxvf phylip-3.697.tar.gz</span><br><span class="line"><span class="comment">#进入src文件夹</span></span><br><span class="line">make -f Makefile.unx install</span><br><span class="line"></span><br><span class="line"><span class="comment">#win版本</span></span><br><span class="line">wget http://evolution.gs.washington.edu/phylip/download/phylip-3.698.zip</span><br><span class="line"></span><br><span class="line"><span class="comment">##phylip生成NJ tree</span></span><br><span class="line"><span class="comment">#在用phylip生成NJ tree之前，需要对infile文件进行处理，将矩阵中的数字均设置为相同的长度</span></span><br><span class="line">./phylip-3.697/exe/neighbor  </span><br><span class="line"><span class="comment">#自动找该文件夹下infile文件，如果没有输入文件名称，y后得到outtree和outfile</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="使用ito作图"><a href="#使用ito作图" class="headerlink" title="使用ito作图"></a>使用ito作图</h3><p>需要一些参数设置。</p>
+
+            </div>
+
+            
+
+            
+
+            
+                <div class="article-nav">
+                    
+                    
+                        <div class="article-next">
+                            <a class="next"
+                               rel="next"
+                               href="/2023/05/06/hexo/"
+                            >
+                            <span class="title flex-center">
+                                <span class="post-nav-title-item">Github 搭建个人博客</span>
+                                <span class="post-nav-item">下一篇</span>
+                            </span>
+                                <span class="right arrow-icon flex-center">
+                              <i class="fas fa-chevron-right"></i>
+                            </span>
+                            </a>
+                        </div>
+                    
+                </div>
+            
+
+            
+        </div>
+
+        
     </div>
 </div>
+
 
                 
             </div>
@@ -205,6 +262,19 @@
         </div>
     </div>
 
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="tools-list">
+        <!-- TOC aside toggle -->
+        
+
+        <!-- go comment -->
+        
+    </ul>
+</div>
+
+        </div>
     
 
     <div class="right-bottom-side-tools">
@@ -279,6 +349,12 @@
 
 
 <div class="post-scripts">
+    
+        
+<script src="/js/post-helper.js"></script>
+
+        
+        
     
 </div>
 
